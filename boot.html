@@ -1,20 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta charset="utf-8"/>
-	<title>Kakao 지도 시작하기</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout with Map and Data Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        :root {
+            --bs-primary: #007bff; /* Bootstrap 기본 파란색 */
+            --bs-light-blue: #5bc0de; /* 밝은 파란색 */
+            --bs-light: #5996cb; /* 아주 밝은 파란색 */
+        }
+
+        .navbar-light {
+            background-color: var(--bs-light-blue);
+        }
+
+        .bg-light {
+            background-color: var(--bs-light) !important;
+        }
+
+        .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        footer {
+            background-color: var(--bs-light-blue);
+            color: white;
+        }
+
+        .offcanvas-header {
+            background-color: var(--bs-primary);
+            color: white;
+        }
+
+        .offcanvas-body {
+            background-color: var(--bs-light);
+        }
+
+        .navbar-brand {
+            color: white !important;
+        }
+
+        #map {
+            height: 800px; /* 기본 높이 */
+            width: 1000px;
+        }
+
+        /* 모바일 환경에서 지도 영역 높이 조정 */
+        @media (max-width: 768px) {
+            #map {
+                height: calc(100vh - 56px); /* 모바일 환경에서 헤더 높이를 고려한 높이 조정 */
+                width: calc(100vw - 10px);
+            }
+        }
+
+        @media (min-width: 769px) {
+            .offcanvas-end {
+                transform: none; /* Offcanvas 효과 비활성화 */
+                visibility: visible; /* 항상 보이도록 설정 */
+                position: static; /* 기본 문서 흐름에 따라 위치 설정 */
+            }
+        }
+
         .overlay {
             background-color: whitesmoke;
             font-size: small;
             color: blue;
-            font-weight: bold;
+            font
         }
+    
     </style>
 </head>
 <body>
-
-	<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e741bffe005e21b11d9e7d6f155a4002"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=e741bffe005e21b11d9e7d6f155a4002"></script>
+    
     <script>
         var bound;
         
@@ -133,27 +193,70 @@
        
 
     </script>
-    <div id="button">
-        <button type="button" onclick="showBird()">여기 있는 새 이름 확인하기</button>
+
+
+<header>
+    <!-- 헤더 내용 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">유민이 탐조지도</a>
+            <button type="button" class="btn btn-light" onclick="showBird()">여기 있는 새들을 보자!</button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#dataPanel" aria-controls="dataPanel">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+</header>
+
+<main class="container-fluid mt-3">
+    <div class="row">
+        <!-- 첫 번째 컬럼: 지도 -->
+        <div class="col-12 col-md-8">
+            <div id="map" >Map will go here</div>
+        </div>
+        
+        <!-- 두 번째 컬럼: 데이터 패널 -->
+        <!-- 모바일에서는 숨겨짐 -->
+        <div class="col-12 col-md-4 offcanvas offcanvas-end" id="dataPanel" tabindex="-1">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title">Data Panel</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <!-- 데이터 패널 내용 -->
+                <button type="button" class="btn btn-light" onclick="showBird()">여기 있는 새들을 보자!</button>
+            </div>
+        </div>
     </div>
-	<div id="map" style="width:800px;height:800px;"></div>
-    <div id="information" style="background-color: bisque; position:absolute; left:800px;top:10px">test</div>
-	<script>
-		var container = document.getElementById('map');
-		var options = {
-			center: new kakao.maps.LatLng(37.33360611839633, 127.08857634040085),
-			level: 3
-		};
+</main>
 
-		var map = new kakao.maps.Map(container, options);
-        var mapTypeControl = new kakao.maps.MapTypeControl();
-        // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
-        // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
-        map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+<script>
+    var container = document.getElementById('map');
+    var options = {
+        center: new kakao.maps.LatLng(37.33360611839633, 127.08857634040085),
+        level: 3
+    };
 
-        // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
-        var zoomControl = new kakao.maps.ZoomControl();
-        map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-	</script>
+    var map = new kakao.maps.Map(container, options);
+    var mapTypeControl = new kakao.maps.MapTypeControl();
+    // 지도에 컨트롤을 추가해야 지도위에 표시됩니다
+    // kakao.maps.ControlPosition은 컨트롤이 표시될 위치를 정의하는데 TOPRIGHT는 오른쪽 위를 의미합니다
+    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+
+    // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
+    var zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+</script>
+
+<footer class="text-muted py-4 bg-light mt-auto">
+    <div class="container">
+        <p class="float-end mb-1">
+            <a href="#">Back to top</a>
+        </p>
+        <p class="mb-1">© 2024 WebSite Name</p>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
