@@ -174,10 +174,10 @@
                         // 마커에 마우스오버 이벤트가 발생하면 인포윈도우를 표시합니다
                         if(!marker.clicked) {
                             infowindow.open(map, marker);
-                        } else {
-                            marker.clicked = !marker.clicked;
+                        } else {                        
                             infowindow.close();
                         }
+                        marker.clicked = !marker.clicked;
 
                         
                     });
